@@ -55,7 +55,7 @@ const CountryPage = () => {
       <p>Languages:</p>
       <ul>
         {country.languages?.map((language) => (
-          <li>{language.name}</li>
+          <li key={language.name}>{language.name}</li>
         ))}
       </ul>
     </Card>
