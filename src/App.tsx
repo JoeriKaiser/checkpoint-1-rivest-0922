@@ -1,24 +1,51 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { gql, useQuery } from "@apollo/client";
+import { Card } from 'antd';
+import { Continent } from './types/continent';
+import { Link, Outlet } from 'react-router-dom';
+
+export const GET_CONTINENTS = gql`
+  query getContinents {
+    continents {
+      name
+      code
+    }
+  }
+`;
 
 function App() {
+  const { loading, error, data } = useQuery(GET_CONTINENTS)
+
+  const handleClick = () => {
+    console.log("TEST")
+  }
+  
+  if (loading) {
+    return <p>loading</p>
+  }
+
+  if (error) {
+    return <p>{error.message}</p>
+  }
+  
+  const continents: Continent[] = data.continents
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Card title='Continents'>
+          {continents.map((continent) => (
+            <Card.Grid
+                onClick={handleClick}
+                key={continent.code}
+                >
+                  <Link to={`/${continent.code}`}>
+                    {continent.name}
+                  </Link>
+              </Card.Grid>
+          ))}
+        </Card>
+        <Outlet />
     </div>
   );
 }

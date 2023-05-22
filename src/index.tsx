@@ -4,12 +4,40 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import Continent from './container/Continent';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        path: "/:code",
+        element: <Continent />,
+      }
+    ]
+  },
+]);
+
+const client = new ApolloClient({
+  uri: 'https://countries.nausicaa.wilders.dev/',
+  cache: new InMemoryCache()
+})
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <RouterProvider router={router} />
+    </ApolloProvider>
   </React.StrictMode>
 );
 
